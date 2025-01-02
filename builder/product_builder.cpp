@@ -1,135 +1,80 @@
-#include <iostream>
-#include <memory>
-#include <string>
-#include <sstream>
+#include "product_builder.h"
 
 
-class CommunicationMetadata {
-private:
-    std::string srcIp;
-    int srcPort;
-    std::string dstIp;
-    int dstPort;
-
-public:
-    CommunicationMetadata(std::string srcIp, int srcPort, std::string dstIp, int dstPort) : 
-        srcIp(srcIp),
-        srcPort(srcPort),
-        dstIp(dstIp),
-        dstPort(dstPort) {}
-
-    std::string getProperties(){
-        std::stringstream json;
-        json << ",\n\t\"communicationMetadata\":\n\t{\n" <<
-        "\t\t\"srcIp\":\" " << srcIp << "\",\n" <<
-        "\t\t\"srcPort\":\" " << srcPort << "\",\n" <<
-        "\t\t\"dstIp\":\" " << dstIp << "\",\n" <<
-        "\t\t\"dstPort\":\" " << dstPort << "\",\n";
-        
-        json << "\t}\n";
-        return json.str();
-    }
-};
-
-class IAdditinalProperties{
-public:
-    virtual std::string getProperties() const = 0;
-    virtual ~IAdditinalProperties() = default;
-};
-
-class SedanAdditionalProperties : public IAdditinalProperties{
-public:
-    std::string roof_color;
-    SedanAdditionalProperties(const std::string& roof_color) : roof_color(roof_color){}
-
-    std::string getProperties() const override {
-        return "\t\"roof_color\": \" " + roof_color + "\"";
-    }
-};
-
-
-class Product {
-public:
-    std::string token;
-    std::string communicator;
-    int version;
-    std::string tool_id;
+std::string CommunicationMetadata::getProperties(){
+    std::stringstream json;
+    json << ",\n\t\"communicationMetadata\":\n\t{\n" <<
+    "\t\t\"srcIp\":\" " << srcIp << "\",\n" <<
+    "\t\t\"srcPort\":\" " << srcPort << "\",\n" <<
+    "\t\t\"dstIp\":\" " << dstIp << "\",\n" <<
+    "\t\t\"dstPort\":\" " << dstPort << "\",\n";
     
-    std::unique_ptr<CommunicationMetadata> communicationMetadata;
-    std::unique_ptr<IAdditinalProperties> additionalProperties;
+    json << "\t}\n";
+    return json.str();
+}
 
-    std::string toJson() const {
-        std::stringstream json;
-        json << "{\n" << "\t\"tool_id\":\" " << tool_id << "\",\n" <<
-        "\t\"version\":\" " << version << "\",\n" <<
-        "\t\"communicator\":\" " << communicator << "\",\n" <<
-        "\t\"token\":\" " << token << "\",\n";
+std::string SedanAdditionalProperties::getProperties() const {
+    return "\t\"roof_color\": \" " + roof_color + "\"";
+}
 
-        if (additionalProperties) {
-            json << additionalProperties->getProperties();
-        }
-        if (communicationMetadata) {
-            json << communicationMetadata->getProperties();
-        }
+std::string Product::toJson() const {
+    std::stringstream json;
+    json << "{\n" << "\t\"tool_id\":\" " << tool_id << "\",\n" <<
+    "\t\"version\":\" " << version << "\",\n" <<
+    "\t\"communicator\":\" " << communicator << "\",\n" <<
+    "\t\"token\":\" " << token << "\",\n";
 
-        json << "\n}";
-        return json.str();
+    if (additionalProperties) {
+        json << additionalProperties->getProperties();
     }
-};
-
-class ProductBuilder{
-protected:
-    std::unique_ptr<Product> product;
-public:
-    ProductBuilder() {
-        product = std::make_unique<Product>();
+    if (communicationMetadata) {
+        json << communicationMetadata->getProperties();
     }
 
-    virtual void buildAdditionalProperties() = 0;
+    json << "\n}";
+    return json.str();
+}
 
-    void buildToolId() {
-        product->tool_id = "abcdef123456";
-    }
+ProductBuilder::ProductBuilder() {
+    product = std::make_unique<Product>();
+}
 
-    void buildToken(){
-        product->token = "tcp|1234567890abcdefg";
-    }
+void ProductBuilder::buildToolId() {
+    product->tool_id = "abcdef123456";
+}
 
-    void buildVersion(){
-        product->version = 123456789;
-    }
+void ProductBuilder::buildToken(){
+    product->token = "tcp|1234567890abcdefg";
+}
 
-    void buildCommunicator(){
-        product->communicator = "TcpCommunicator";
-    }
+void ProductBuilder::buildVersion(){
+    product->version = 123456789;
+}
 
-    void buildCommunicationMetadata(){
-        product->communicationMetadata = std::make_unique<CommunicationMetadata>("192.168.1.1", 8000, "192.168.1.64", 50017);
-    }
+void ProductBuilder::buildCommunicator(){
+    product->communicator = "TcpCommunicator";
+}
 
-    std::unique_ptr<Product> getProduct() { return std::move(product); }
-    virtual ~ProductBuilder() {}
-};
+void ProductBuilder::buildCommunicationMetadata(){
+    product->communicationMetadata = std::make_unique<CommunicationMetadata>("192.168.1.1", 8000, "192.168.1.64", 50017);
+}
+
+std::unique_ptr<Product> ProductBuilder::getProduct() { return std::move(product); }
+
+void ABuilder::buildAdditionalProperties() {
+    product->additionalProperties = std::make_unique<SedanAdditionalProperties>("Black");
+}
 
 
-class ABuilder : public ProductBuilder{
-public:
-    void buildAdditionalProperties() override {
-        product->additionalProperties = std::make_unique<SedanAdditionalProperties>("Black");
-    }
-};
+void ProductDirector::construct(ProductBuilder& builder){
+    builder.buildToolId();
+    builder.buildVersion();
+    builder.buildCommunicator();
+    builder.buildToken();
+    builder.buildAdditionalProperties();  
+    builder.buildCommunicationMetadata();      
+}
 
-class ProductDirector{
-public:
-    void construct(ProductBuilder& builder){
-        builder.buildToolId();
-        builder.buildVersion();
-        builder.buildCommunicator();
-        builder.buildToken();
-        builder.buildAdditionalProperties();  
-        builder.buildCommunicationMetadata();      
-    }
-};
 
 int main(){
     ProductDirector director;
