@@ -14,12 +14,12 @@ int main(){
 
 
     ProductDirector director;
-    ArpadProductBuilder arpadProductBuilder;
+    ArpadProductBuilder arpadProductBuilders[TOOL_NUMBER];
 
-    director.construct(arpadProductBuilder, tools[0]);
-
-    std::unique_ptr<Product> arpadProduct = arpadProductBuilder.getProduct();
-    std::cout << arpadProduct->toJson() << std::endl;
-
-    
+    for (int i=0; i< TOOL_NUMBER; i++){
+        director.construct(arpadProductBuilders[i], tools[i]);
+        std::unique_ptr<Product> arpadProduct = arpadProductBuilders[i].getProduct();
+        std::cout << arpadProduct->toJson() << std::endl;
+        factory.sendMessageToTool(tools[i], arpadProduct->toJson());
+    }
 }

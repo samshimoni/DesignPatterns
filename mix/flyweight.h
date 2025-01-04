@@ -15,7 +15,7 @@
 #include <unordered_map>
 
 
-#define TOOL_NUMBER 100000
+#define TOOL_NUMBER 10000
 
 class Tool {
 public:
