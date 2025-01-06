@@ -90,6 +90,7 @@ int ToolGenerator::getPortForAddress(const std::string &address) {
         {"172.17.0.2", 12345},
         {"172.17.0.3", 12346},
         {"172.17.0.4", 12347}};
+    
     return address_port_map.at(address);
 }
 

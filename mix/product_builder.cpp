@@ -1,7 +1,6 @@
 #include "product_builder.h"
 
 
-
 std::string CommunicationMetadata::getProperties(){
     std::stringstream json;
     json << ",\n\t\"communicationMetadata\":\n\t{\n" <<
@@ -75,6 +74,4 @@ void ProductDirector::construct(ProductBuilder& builder, Tool& tool){
     builder.buildAdditionalProperties();  
     builder.buildCommunicationMetadata();      
 }
-
-
 

@@ -39,7 +39,6 @@ private:
 };
 
 
-
 class Sender{
 public:
     Sender(const std::string& serverIp, int port);
@@ -63,8 +62,6 @@ private:
 };
 
 
-
-
 class ToolGenerator {
 private:
     std::random_device rd;
@@ -77,5 +74,3 @@ public:
     ToolGenerator() : gen(rd()) {}
     Tool generateTool();
 };
-
-

@@ -1,4 +1,3 @@
-
 #include "flyweight.h"
 
 
@@ -46,9 +45,11 @@ void Sender::sendMessage(const std::string& message){
     size_t bytesent = send(sockfd, message.c_str(), message.length(), 0);
     if(bytesent < 0){
         std::cerr << "Error Sending " <<std::endl;
-    } else{
-        std::cout << "Message Send Successfully" << std::endl;
     }
+    // } else{
+    //     // std::cout << "Message Send Successfully" << std::endl;
+
+    // }
 }
 
 Sender::~Sender(){
@@ -106,19 +107,3 @@ Tool ToolGenerator::generateTool() {
 
     return Tool(tool_id, server_address, server_port, version);
 }
-
-
-// int main(void){
-
-//     FlyweightFactory factory;
-
-//     ToolGenerator generator;
-
-//     Tool tools[TOOL_NUMBER];
-//     for (int i=0; i < TOOL_NUMBER ; i++){
-//         tools[i] = generator.generateTool();
-//         factory.sendMessageToTool(tools[i], "{\nToolId: " + tools[i].getToolId() + ",\nVersion: " + std::to_string(tools[i].getVersion()) + "\n}\n");
-//     }
-
-//     return 0;
-// }
