@@ -1,6 +1,5 @@
 #include "flyweight.h"
 
-
 std::string Tool::getToolId() const { return _tool_id; }
 std::string Tool::getServerAddress() const {return _server_address;}
 int Tool::getServerPort() const {return _server_port;}
@@ -19,7 +18,6 @@ void Tool::display() const {
                 << "Server Port: " << _server_port << "\n"
                 << "Version: " << _version << "\n";
 }
-
 
 Sender::Sender(const std::string& serverIp, int port) {
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -46,10 +44,6 @@ void Sender::sendMessage(const std::string& message){
     if(bytesent < 0){
         std::cerr << "Error Sending " <<std::endl;
     }
-    // } else{
-    //     // std::cout << "Message Send Successfully" << std::endl;
-
-    // }
 }
 
 Sender::~Sender(){
@@ -72,8 +66,6 @@ void FlyweightFactory::sendMessageToTool(const Tool& tool, const std::string& me
         it->second->sendMessage(message);
     }
 }
-
-
 
 std::string ToolGenerator::generateToolId() {
     std::ostringstream oss;

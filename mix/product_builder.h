@@ -7,8 +7,6 @@
 #include "flyweight.h"
 
 
-
-
 class CommunicationMetadata {
 private:
     std::string srcIp;
@@ -64,11 +62,11 @@ public:
     ProductBuilder();
 
     virtual void buildAdditionalProperties() = 0;
-    void buildToolId(Tool& tool);
+    void buildToolId(const std::string& tool_id);
     void buildToken();
-    void buildVersion(Tool& tool);
+    void buildVersion(int version);
     void buildCommunicator();
-    void buildCommunicationMetadata();
+    void buildCommunicationMetadata(const std::string& serverAddress, int serverPort);
 
     std::unique_ptr<Product> getProduct();
     virtual ~ProductBuilder() = default;

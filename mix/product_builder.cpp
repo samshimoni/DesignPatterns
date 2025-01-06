@@ -39,24 +39,24 @@ ProductBuilder::ProductBuilder() {
     product = std::make_unique<Product>();
 }
 
-void ProductBuilder::buildToolId(Tool& tool) {
-    product->tool_id = tool.getToolId();
+void ProductBuilder::buildToolId(const std::string& tool_id) {
+    product->tool_id = tool_id;
 }
 
 void ProductBuilder::buildToken(){
     product->token = "tcp|1234567890abcdefg";
 }
 
-void ProductBuilder::buildVersion(Tool& tool){
-    product->version = tool.getVersion();
+void ProductBuilder::buildVersion(int version){
+    product->version = version;
 }
 
 void ProductBuilder::buildCommunicator(){
     product->communicator = "TcpCommunicator";
 }
 
-void ProductBuilder::buildCommunicationMetadata(){
-    product->communicationMetadata = std::make_unique<CommunicationMetadata>("192.168.1.1", 8000, "192.168.1.64", 50017);
+void ProductBuilder::buildCommunicationMetadata(const std::string& serverAddress, int serverPort){
+    product->communicationMetadata = std::make_unique<CommunicationMetadata>("192.168.1.1", 8000, serverAddress, serverPort);
 }
 
 std::unique_ptr<Product> ProductBuilder::getProduct() { return std::move(product); }
@@ -67,11 +67,11 @@ void ArpadProductBuilder::buildAdditionalProperties() {
 
 
 void ProductDirector::construct(ProductBuilder& builder, Tool& tool){
-    builder.buildToolId(tool);
-    builder.buildVersion(tool);
+    builder.buildToolId(tool.getToolId());
+    builder.buildVersion(tool.getVersion());
     builder.buildCommunicator();
     builder.buildToken();
     builder.buildAdditionalProperties();  
-    builder.buildCommunicationMetadata();      
+    builder.buildCommunicationMetadata(tool.getServerAddress(), tool.getServerPort());      
 }
 
